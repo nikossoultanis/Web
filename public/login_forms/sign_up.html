@@ -6,25 +6,21 @@
   <body>
     <div class="sign-up-form">
       <h1>Sign Up</h1>
-      <form>
-        <input type="username" class="input-box" placeholder="Your Username" />
-        <input type="password" class="input-box" placeholder="Your Password" />
-        <input
-          type="password"
-          class="input-box"
-          placeholder="Enter your password again"
-        />
-        <input type="email" class="input-box" placeholder="Your Email" />
+      <form action="/sign_up" method="POST">
+        <input type="username" id="username" name="username" required class="input-box" placeholder="Your Username" />
+        <input type="email"    id="email"    name="email"    required class="input-box" placeholder="Your Email" />
+        <input type="password" id="password" name="password" required class="input-box" placeholder="Your Password" />
+        <input type="password" id="password" name="password" required class="input-box" placeholder="Enter your password again" />
         <p>
-          <span><input type="checkbox"/></span> I agree to the terms of services
+          <span><input type="checkbox" id="checkbox" name="checkbox"/></span> I agree to the terms of service
         </p>
-        <button type="button" class="sign-up-btn">Sign Up</button>
+        <button type="submit" class="sign-up-btn">Sign Up</button>
         <hr />
         <p class="or">OR</p>
         <p>
           Do you already have an account?
           <a
-            href="login"
+            href="sign_in"
             >Sign In</a
           >
         </p>
