@@ -1,0 +1,159 @@
+<html>
+<script>
+</script>
+<canvas id="myChart" width="200" height="50"></canvas>
+<canvas id="myChart2" width="200" height="50"></canvas>
+<canvas id="myChart3" width="200" height="50"></canvas>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                borderWidth: 1,
+                borderColor: '#ff0000',
+                backgroundColor: '#800000',
+            }]
+        },
+        options: {
+
+            legend: {
+                display: false
+            },
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var data2 = JSON.parse(this.responseText);
+            for (var i = 0; i < data2.length; i++) {
+                console.log(data2[i].number);
+                myChart.data.labels.push(data2[i].activity_type);
+                myChart.data.datasets[0].data.push(data2[i].number);
+                console.log(myChart.data.datasets[0].data);
+                myChart.update();
+            }
+            myChart.update();
+
+            //myChart.data.datasets[0].data.push(data2);
+
+        }
+    };
+    xmlhttp.open("GET", "percentage.php", true);
+    xmlhttp.send();
+
+    //graph 2
+    var ctx2 = document.getElementById('myChart2').getContext('2d');
+    var myChart2 = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [{
+                data: [],
+                borderWidth: 1,
+                borderColor: '#00ff00',
+                backgroundColor: '#008000',
+            }]
+        },
+        options: {
+
+            legend: {
+                display: false
+            },
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var data2 = JSON.parse(this.responseText);
+            for (var i = 0; i < data2.length; i++) {
+                console.log(data2[i].number);
+                myChart2.data.labels.push(data2[i].userid);
+                myChart2.data.datasets[0].data.push(data2[i].entries);
+                console.log(myChart2.data.datasets[0].data);
+                myChart2.update();
+            }
+            myChart2.update();
+
+            //myChart.data.datasets[0].data.push(data2);
+
+        }
+    };
+    xmlhttp.open("GET", "entries.php", true);
+    xmlhttp.send();
+
+    //graph 3
+    var ctx3 = document.getElementById('myChart3').getContext('2d');
+    var myChart3 = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+            datasets: [{
+                data: [],
+                borderWidth: 1,
+                borderColor: '#0000ff',
+                backgroundColor: '#000080',
+            }]
+        },
+        options: {
+
+            legend: {
+                display: false
+            },
+            responsive: true,
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var data2 = JSON.parse(this.responseText);
+            console.log(data2);
+            for (var i = 0; i < data2.length; i++) {
+                console.log(data2[i].number);
+                myChart3.data.datasets[0].data.push(data2[i]);
+                console.log(myChart3.data.datasets[0].data);
+                myChart3.update();
+            }
+            myChart3.update();
+
+            //myChart.data.datasets[0].data.push(data2);
+
+        }
+    };
+    xmlhttp.open("GET", "months.php", true);
+    xmlhttp.send();
+
+    // This is where you handle what to do with the response.
+    // The actual data is found on this.responseText
+    // re-render the chart
+    // myChart.data.datasets[0].data.push(2);
+</script>
+
+</html>
