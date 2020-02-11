@@ -12,6 +12,8 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
     echo "Failed";
 }
+$userid = $_POST['userid'];
+echo $userid;
 
 $decoded = \JsonMachine\JsonMachine::fromFile('setA.json');
 
@@ -71,24 +73,24 @@ foreach ($decoded as $locations)
                 $activity_type = $sub_activity["type"];
                 $activity_confidence = $sub_activity["confidence"];
                 $sql = "INSERT INTO locations(userid, heading, activity_type, activity_confidence, activity_timestamp, vertical_accuracy, velocity, accuracy, longitude, latitude, altitude, timestamp) 
-                VALUES ('0', $heading, '$activity_type', $activity_confidence, $activity_timestamp, $verticalAccuracy, $velocity, $accuracy, $longitude, $latitude, $altitude, '$timestamp')";
+                VALUES ('$userid', $heading, '$activity_type', $activity_confidence, $activity_timestamp, $verticalAccuracy, $velocity, $accuracy, $longitude, $latitude, $altitude, '$timestamp')";
                 if(mysqli_query($conn, $sql)){
                     echo "Successfully Uploaded.";
                 } else{
                     echo $conn->error . "<br>";
-                    echo "Error on Upload12345.";
+                    echo "Error on Upload.";
                 }
             }
         }
 
     } else{
         $sql = "INSERT INTO locations(userid, heading, activity_type, activity_confidence, activity_timestamp, vertical_accuracy, velocity, accuracy, longitude, latitude, altitude, timestamp) 
-        VALUES ('0', $heading, $activity_type, $activity_confidence, $activity_timestamp, $verticalAccuracy, $velocity, $accuracy, $longitude, $latitude, $altitude, '$timestamp')";
+        VALUES ('$userid', $heading, $activity_type, $activity_confidence, $activity_timestamp, $verticalAccuracy, $velocity, $accuracy, $longitude, $latitude, $altitude, '$timestamp')";
         if(mysqli_query($conn, $sql)){
             echo "Successfully Uploaded.";
         } else{
             echo $conn->error . "<br>";
-            echo "Error on Upload1235124312341243431241234.";
+            echo "Error on Upload.";
         }
 
     }

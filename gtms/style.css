@@ -1,64 +1,103 @@
 body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-  background-image: url("background.jpg");
-  background-size: cover;
-  background-position: center;
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background-image: url("182529.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: auto;
 }
 
 .sign-up-form {
-  width: 300px;
-  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3);
-  background: white;
-  padding: 20px;
-  margin: 8% auto 0;
-  text-align: center;
+    width: 300px;
+    background: rgba(183, 0, 255, 0);
+    padding: 20px;
+    margin: 8% auto 0;
+    text-align: center;
 }
 
 .sign-up-form h1 {
-  color: #1c8adb;
-  margin-bottom: 30px;
+    color: #2ca0ff;
+    margin-bottom: 30px;
 }
 
 .input-box {
-  border-radius: 20px;
-  padding: 10px;
-  margin: 10px 0;
-  width: 100%;
-  border: 1px solid #1c8adb;
-  outline: none;
+    border-radius: 20px;
+    padding: 10px;
+    margin: 10px 0;
+    width: 100%;
+    border: 1px solid #1c8adb;
+    outline: none;
+}
+
+.welcome {
+    width: 300px;
+    background: #1c8bdb00;
+    padding: 20px;
+    margin: 8% auto 0;
+    text-align: center;
+    color: #1c8adb;
+}
+
+.parse {
+    width: 10%;
+    background: rgba(255, 255, 255, 0);
+    padding: 20px;
+    margin: 8% auto 0;
+    text-align: center;
+}
+
+.parse-btn {
+    background-color: #1c8adb;
 }
 
 button {
-  color: white;
-  width: 100%;
-  padding: 10px;
-  border-radius: 20px;
-  font-size: 15px;
-  margin: 10px 0;
-  border: none;
-  outline: none;
-  cursor: pointer;
+    color: white;
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    font-size: 15px;
+    margin: 10px 0;
+    border: none;
+    outline: none;
+    cursor: pointer;
 }
 
 .sign-up-btn {
-  background-color: #1c8adb;
+    background-color: #1c8adb;
 }
 
 .sign-in-form {
-  width: 300px;
-  box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.3);
-  background: white;
-  padding: 20px;
-  margin: 8% auto 0;
-  text-align: center;
+    width: 300px;
+    background: rgba(255, 255, 255, 0);
+    padding: 20px;
+    margin: 8% auto 0;
+    text-align: center;
 }
 
 .sign-in-form h1 {
-  color: #1c8adb;
-  margin-bottom: 30px;
+    color: #1c8bdb;
+    margin-bottom: 30px;
 }
+
 .sign-in-btn {
-  background-color: #1c8adb;
+    background-color: #1c8adb;
+}
+
+.error {
+    width: 80%;
+    border-radius: 25px;
+    background: #ee7b7b;
+    padding: 10px;
+    margin: 8% auto 0;
+    text-align: center;
+    color: #ffffff;
+}
+
+.or {
+    color: aliceblue;
+}
+
+a:link {
+    color: rgb(133, 192, 251);
 }

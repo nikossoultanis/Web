@@ -1,5 +1,5 @@
 <?php
-session_start();
+session_start();	  
 
 $srv = "localhost";
 $usrnm = "root";
@@ -24,27 +24,33 @@ if (isset($_POST['sign-up-btn'])) {
 }
 
 function sign_up(){
-    global $conn, $errors, $username, $email;
+	global $conn, $errors, $username, $email;
 
-    $username    =  e($_POST['username']);
-	$email       =  e($_POST['email']);
-	$password1  =  e($_POST['password1']);
-    $password2  =  e($_POST['password2']);
-	$password = md5($password1); //encrypt the password before saving in the database
-    $userid = md5($email.$password1);
+    $username  =  e($_POST['username']);
+	$email     =  e($_POST['email']);
+	$password1 =  e($_POST['password1']);
+    $password2 =  e($_POST['password2']);
+	$password  = md5($password1); //encrypt the password before saving in the database
+    $userid    = md5($email.$password1);
 	$query = "INSERT INTO users (userid, username, email, password, admin) 
         VALUES('$userid', '$username', '$email', '$password', 0)";
-	mysqli_query($conn, $query);
+	if (!mysqli_query($conn, $query))
+	{
+		$_SESSION["error"] = "Duplicate Credentials";
+		header('location: sign_up.php');
+		exit;
+	}
 
 	// get id of the created user
-	$logged_in_user_id = mysqli_insert_id($conn);
-	$_SESSION['user'] = getUserById($logged_in_user_id); // put logged in user in session
-	$_SESSION['success']  = "You are now logged in";
-    header('location: index.html');	
+	//$logged_in_user_id = mysqli_insert_id($conn);
+	//$_SESSION['user'] = getUserById($logged_in_user_id); // put logged in user in session
+	//$_SESSION['success']  = "You are now logged in";
+	header('location: sign_in.php');
+	exit;
 }
 function getUserById($id){
 	global $conn;
-	$query = "SELECT * FROM users WHERE id=" . $id;
+	$query = "SELECT * FROM users WHERE userid=" . $id;
 	$result = mysqli_query($conn, $query);
 
 	$user = mysqli_fetch_assoc($result);
@@ -78,8 +84,12 @@ function isLoggedIn()
 	}
 }
 // LOG OUT
-
-// LOGIN IN 
+if (isset($_GET['log-out-btn'])){
+	if(isLoggedIn()){
+		logout();
+	}
+}
+// LOG IN 
 
 if (isset($_POST['sign-in-btn'])) {
 	if (!isLoggedIn()){
@@ -87,10 +97,18 @@ if (isset($_POST['sign-in-btn'])) {
 	} else {
 		session_destroy();
 		unset($_SESSION['user']);
-		header('location: user.html');
+		header('location: user.php');
+		exit;
 	}
 }
 
+function logout()
+{
+	session_destroy();
+	unset($_SESSION['user']);
+	header('location: index.html');
+	exit;
+}
 
 // LOGIN USER
 function login(){
@@ -111,17 +129,25 @@ function login(){
 		if ($logged_in_user['admin'] == 1) {
 			$_SESSION['user'] = $logged_in_user;
 			$_SESSION['success']  = "You are now logged in";
-			//header('location: admin.html');		  
+			//header('location: admin.html');
 		}else{
 			$_SESSION['user'] = $logged_in_user;
 			$_SESSION['success']  = "You are now logged in";
 			echo "user";
-			header('location: user.html');
+			header('location: user.php');
+			exit;
 		}
 	}else {
-		array_push($errors, "Wrong username/password combination");
-		header('location: sign_in.html');
+		//array_push($errors, "Wrong username/password combination");
+		$_SESSION["error"] = "Wrong Credentials";
+		header('location: sign_in.php');
+		exit;
 	}
+}
+
+
+function alert($msg) {
+	echo "<script type='text/javascript'>alert('$msg');</script>";
 }
 
 
