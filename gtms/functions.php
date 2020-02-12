@@ -36,7 +36,7 @@ function sign_up(){
         VALUES('$userid', '$username', '$email', '$password', 0)";
 	if (!mysqli_query($conn, $query))
 	{
-		$_SESSION["error"] = "Duplicate Credentials";
+		$_SESSION["error"] = "😔 Duplicate Credentials";
 		header('location: sign_up.php');
 		exit;
 	}
@@ -106,7 +106,7 @@ function logout()
 {
 	session_destroy();
 	unset($_SESSION['user']);
-	header('location: index.html');
+	header('location: index.php');
 	exit;
 }
 
@@ -129,7 +129,7 @@ function login(){
 		if ($logged_in_user['admin'] == 1) {
 			$_SESSION['user'] = $logged_in_user;
 			$_SESSION['success']  = "You are now logged in";
-			//header('location: admin.html');
+			header('location: admin.php');
 		}else{
 			$_SESSION['user'] = $logged_in_user;
 			$_SESSION['success']  = "You are now logged in";
@@ -139,7 +139,7 @@ function login(){
 		}
 	}else {
 		//array_push($errors, "Wrong username/password combination");
-		$_SESSION["error"] = "Wrong Credentials";
+		$_SESSION["error"] = "😔 Wrong Credentials";
 		header('location: sign_in.php');
 		exit;
 	}

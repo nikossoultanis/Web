@@ -2,10 +2,19 @@ body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
-    background-image: url("182529.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: auto;
+    background: linear-gradient(60deg, #142850, #27496d, #0c7b93, #0183a0);
+    background-size: 600%, 100%;
+    animation: gradient 10s ease-in-out infinite;
+    animation-direction: alternate;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0%
+    }
+    100% {
+        background-position: 100%
+    }
 }
 
 .sign-up-form {
@@ -14,11 +23,13 @@ body {
     padding: 20px;
     margin: 8% auto 0;
     text-align: center;
+    color: aliceblue;
 }
 
 .sign-up-form h1 {
-    color: #2ca0ff;
+    color: aliceblue;
     margin-bottom: 30px;
+    font-size: 40px;
 }
 
 .input-box {
@@ -36,7 +47,7 @@ body {
     padding: 20px;
     margin: 8% auto 0;
     text-align: center;
-    color: #1c8adb;
+    color: aliceblue;
 }
 
 .parse {
@@ -76,8 +87,9 @@ button {
 }
 
 .sign-in-form h1 {
-    color: #1c8bdb;
+    color: aliceblue;
     margin-bottom: 30px;
+    font-size: 40px;
 }
 
 .sign-in-btn {
@@ -100,4 +112,34 @@ button {
 
 a:link {
     color: rgb(133, 192, 251);
+}
+
+.new-button {
+    display: inline-block;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+    background-color: #9c27b0;
+    font-size: 16px;
+    color: #fff;
+}
+
+input[type="file"] {
+    position: absolute;
+    z-index: -1;
+    top: 6px;
+    left: 0;
+    font-size: 15px;
+    color: rgb(153, 153, 153);
+}
+
+.button-wrap {
+    position: relative;
+}
+
+.upload-confirm {
+    margin-left: 200px;
+    margin-right: 200px;
+    padding-left: 200px;
+    padding-right: 200px;
 }

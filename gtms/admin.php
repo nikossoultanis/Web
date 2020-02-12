@@ -1,11 +1,11 @@
 <?php
     include 'functions.php';
-    if (!isset($_SESSION['user'])) {
-        header('location: sign_in.php');
+      if ($_SESSION['user']['admin'] != 1){
+        header('location: user.php');
         exit;
     }
-?>
 
+?>
 <html>
 
 <head>
@@ -17,32 +17,26 @@
         <?php
             $username_disp = $_SESSION['user']['username'];
             $userid = $_SESSION['user']['userid'];
-            echo "<h1>😃 $username_disp<h1>";
+            echo "<h1>🔑 $username_disp<h1>";
         ?>
         <form action="functions.php">
             <button class="parse-btn" type="submit" name="log-out-btn">👋 Log out</button>
         </form>
 
         <?php
-            echo "
+        echo "
             <form method=\"post\" action=\"parser.php\">
             
                 <button type=\"submit\" class=\"parse-btn\" name=\"userid\" value=\"$userid\">📤 Upload & Parse</button>
             </form>";
         ?>
-
-        <?php
-            if ($_SESSION['user']['admin'] == 1){
-                echo "<button onclick=\"location.href='admin.php'\" type=\"button\" class=\"sign-in-btn\">🔑 Admin Dashboard</button>";
-            }
-        ?>
-
+        <form action="delete.php">
+            <button class="parse-btn" onclick="return confirm('E!?');">🗑️ Delete</button>
+        </form>
+        <form action="user.php">
+            <button class="parse-btn" type="submit" >👤 User Mode</button>
+        </form>
     </div>
-    <div class="container">
-  <div class="button-wrap">
-    <label class ="new-button" for="upload"> Upload CV
-    <input id="upload" type="file" >
-  <div>
- </div>
+
 </body>
 </html>
