@@ -25,7 +25,7 @@
 
         <?php
         echo "
-            <form method=\"post\" action=\"parser.php\">
+            <form method=\"post\" action=\"upload.php\">
             
                 <button type=\"submit\" class=\"parse-btn\" name=\"userid\" value=\"$userid\">📤 Upload & Parse</button>
             </form>";

@@ -4,7 +4,7 @@
     $month_count = array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
     $result = array();
-    $sql = "SELECT timestamp/1000 AS `timestamp` FROM locations GROUP BY timestamp;";
+    $sql = "SELECT timestamp/1000 AS `timestamp` FROM locations;";
     $data = $conn->query($sql);
     while($temp = $data->fetch_assoc())
     {

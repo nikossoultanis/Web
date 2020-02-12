@@ -1,6 +1,7 @@
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Nikos & Vaios Mapping Company Co. Ltd.</title>
     <link rel="stylesheet" href="style.css" />
 </head>

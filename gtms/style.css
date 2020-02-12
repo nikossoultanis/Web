@@ -116,21 +116,26 @@ a:link {
 
 .new-button {
     display: inline-block;
-    padding: 8px 12px;
+    margin: 10px 0;
+    padding: 10px;
+    width: 280px;
     cursor: pointer;
-    border-radius: 4px;
-    background-color: #9c27b0;
-    font-size: 16px;
+    border-radius: 20px;
+    background-color: #1c8adb;
+    font-size: 15px;
     color: #fff;
 }
 
+label {
+    font-weight: normal !important;
+}
+
 input[type="file"] {
+    opacity: 0;
+    visibility: hidden;
     position: absolute;
-    z-index: -1;
-    top: 6px;
-    left: 0;
-    font-size: 15px;
-    color: rgb(153, 153, 153);
+    top: -9999px;
+    left: -9999px;
 }
 
 .button-wrap {
@@ -142,4 +147,8 @@ input[type="file"] {
     margin-right: 200px;
     padding-left: 200px;
     padding-right: 200px;
+}
+
+#map-canvas {
+    height: 100%;
 }

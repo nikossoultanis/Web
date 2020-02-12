@@ -1,4 +1,5 @@
 <?php
+
 require __DIR__ . '/vendor/autoload.php';
 $servername = "localhost";
 $username = "root";
@@ -13,32 +14,34 @@ if ($conn->connect_error) {
     echo "Failed";
 }
 $userid = $_POST['userid'];
+
 echo $userid;
 
 
 $target_dir = "uploads/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 $uploadOk = 1;
-$fileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
-
+//$fileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+if($target_file) {
 // Check if file already exists
-if (file_exists($target_file)) {
-    echo "Sorry, file already exists.";
-    $uploadOk = 0;
-}
+// if (file_exists($target_file)) {
+//     echo "Sorry, file already exists.";
+//     $uploadOk = 0;
+// }
 // Check file size
-if ($_FILES["fileToUpload"]["size"] > 5000000) {
-    echo "Sorry, your file is too large.";
-    $uploadOk = 0;
-}
+// if ($_FILES["fileToUpload"]["size"] > 5000000) {
+//     echo "Sorry, your file is too large.";
+//     $uploadOk = 0;
+// }
 // Allow certain file formats
-if($fileType != "json") {
-    echo "Sorry, only JSON files are allowed.";
-    $uploadOk = 0;
-}
+// if($fileType != "json") {
+//     $_FILES["error"] = "Sorry, only JSON files are allowed.";
+//     $uploadOk = 0;
+// }
 // Check if $uploadOk is set to 0 by an error
 if ($uploadOk == 0) {
-    echo "Sorry, your file was not uploaded.";
+    $_FILES["error"] = "Sorry, your file was not uploaded.";
+    header('location: upload.php');
 // if everything is ok, try to upload file
 } else {
     if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
@@ -47,7 +50,7 @@ if ($uploadOk == 0) {
         echo "Sorry, there was an error uploading your file.";
     }
 }
-
+}
 
 
 
@@ -75,18 +78,32 @@ foreach ($decoded as $locations)
         $latitude = 0;
         $altitude = 0;
         $timestamp = 0;
-
+        $E7 = 10**7;
         $timestamp = $item["timestampMs"];
-        $latitude = $item["latitudeE7"];
-        $longitude = $item["longitudeE7"];
+        $latitude = $item["latitudeE7"] / $E7;
+        $longitude = $item["longitudeE7"] / $E7;
         $accuracy = $item["accuracy"];
+        echo $latitude."<br>";
+        echo $longitude;
 
-    echo($timestamp . $latitude . $longitude . $accuracy);
+    // if(6371*acos(cos(deg2rad(38.230462))*cos(deg2rad($latitude))*cos(deg2rad($longitude) - deg2rad(21.753150)) + sin(deg2rad(38.230462)))*sin(deg2rad($latitude)) <= 10){
+    // break;
+    // }
 
-    if(6371*acos(cos(deg2rad(38.230462))*cos(deg2rad($latitude))*cos(deg2rad($longitude) - deg2rad(21.753150)) + sin(deg2rad(38.230462)))*sin(deg2rad($latitude)) >= 10){
+    echo acos(sin($latitude*0.0175)* sin(38.230462 * 0.0175) 
+    + cos($latitude * 0.0175) * cos(38.230462*0.0175) * 
+    cos((21.753150 * 0.0175) - ($longitude * 0.0175)))*6371;
+    echo "<br>";
+
+    if(acos(sin($latitude*0.0175)* sin(38.230462 * 0.0175) 
+    + cos($latitude * 0.0175) * cos(38.230462*0.0175) * 
+    cos((21.753150 * 0.0175) - ($longitude * 0.0175)))*6371 >= 10)
+    {
+        echo "<br>";
+        echo "bike";
+        echo "<br>";
         continue;
     }
-
     if(!empty($item["velocity"])){
         $velocity = $item["velocity"];
     }
@@ -112,10 +129,10 @@ foreach ($decoded as $locations)
                 $sql = "INSERT INTO locations(userid, heading, activity_type, activity_confidence, activity_timestamp, vertical_accuracy, velocity, accuracy, longitude, latitude, altitude, timestamp) 
                 VALUES ('$userid', $heading, '$activity_type', $activity_confidence, $activity_timestamp, $verticalAccuracy, $velocity, $accuracy, $longitude, $latitude, $altitude, '$timestamp')";
                 if(mysqli_query($conn, $sql)){
-                    echo "Successfully Uploaded.";
+                    //echo "Successfully Uploaded.";
                 } else{
-                    echo $conn->error . "<br>";
-                    echo "Error on Upload.";
+                   // echo $conn->error . "<br>";
+                   // echo "Error on Upload.";
                 }
             }
         }
@@ -124,10 +141,10 @@ foreach ($decoded as $locations)
         $sql = "INSERT INTO locations(userid, heading, activity_type, activity_confidence, activity_timestamp, vertical_accuracy, velocity, accuracy, longitude, latitude, altitude, timestamp) 
         VALUES ('$userid', $heading, $activity_type, $activity_confidence, $activity_timestamp, $verticalAccuracy, $velocity, $accuracy, $longitude, $latitude, $altitude, '$timestamp')";
         if(mysqli_query($conn, $sql)){
-            echo "Successfully Uploaded.";
+            //echo "Successfully Uploaded.";
         } else{
-            echo $conn->error . "<br>";
-            echo "Error on Upload.";
+           // echo $conn->error . "<br>";
+           // echo "Error on Upload.";
         }
 
     }
