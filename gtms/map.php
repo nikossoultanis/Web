@@ -1,49 +1,87 @@
-<?php    
-    include 'functions.php';
-    if (!isset($_SESSION['user'])) {
-        header('location: sign_in.php');
-        exit;
-    }
-    $location = array();
-    $final_loc = array();
-    $userid = $_SESSION['user']['userid'];
-    $query = "SELECT longitude, latitude, COUNT(*) AS count FROM locations WHERE userid = 'e30bd96d7ef1ce03629ffe3583d1211e' GROUP BY latitude, longitude";
-    $results = mysqli_query($conn, $query);
-    $E7 = 10**7;
-    while($temp = $results->fetch_assoc())
-    {
-
-        $location['lng'] = ((double) $temp['longitude'] );
-        $location['lat'] = ((double) $temp['latitude']);
-        $location['count'] = (int) $temp['count'];
-        array_push($final_loc, $location);
-    }
-    $final = json_encode($final_loc);
-    var_dump($final);
+<?php 
+  include 'map_filter.php'
 ?>
+
 <html>
 <head>
    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
    crossorigin=""/>
    <link rel="stylesheet" href="style.css" />  
+   <link rel='icon' href='favicon.png' type='image/x-icon' />
 
 </head>
 
 <body>
+ <form method="post" name="date-form" action="map_filter.php">
+    <div class="container" id="select">
+
+        <select name="selected_day" class="bear-dates">
+          <?php 
+            for ($i=0; $i <= 31; $i++)
+            {
+              echo "<option value=\"$i\">";
+              if ($i == 0) {
+                echo "(None)";
+              }
+              else {
+                echo "$i";
+              }
+              echo "</option>";
+            }
+          ?>
+        </select>
+
+        <select name="selected_month" class="bear-dates">
+          <?php 
+            for ($i=0; $i <= 12; $i++)
+            {
+              echo "<option value=\"$i\">";
+              if ($i == 0) {
+                echo "(None)";
+              }
+              else {
+                echo "$i";
+              }
+              echo "</option>";
+            }
+          ?>
+        </select>
+
+        <select name="selected_year" class="bear-dates">
+          <?php 
+            for ($i=2009; $i <= 2030; $i++)
+            {
+              echo "<option value=\"$i\">";
+              if ($i == 2009) {
+                echo "(None)";
+              }
+              else {
+                echo "$i";
+              }
+              echo "</option>";
+            }
+          ?>
+        </select>
+    <div id="text">
+        <button class="inline-button">Select Date</button>
+    </div>
+    </div>
+
+ </form>
 <div id="map-canvas"></div>
 <script type="text/javascript" src="node_modules\heatmap.js\build\heatmap.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 <script type="text/javascript" src="leaflet-heatmap.js"></script>
 
 <script type="text/javascript">
-var data22 = <?php echo $final ?>;
-console.log(data22);
-// var data222 = data22.substring(1, data22 .length-1);
-// console.log(data222);
+
+// var data22 = 
+// console.log(data22);
+
 var testData = {
   max: 100,
-  data: data22
+  data: []
 };
 console.log(testData);
 var baseLayer = L.tileLayer(
@@ -76,14 +114,18 @@ var cfg = {
 var heatmapLayer = new HeatmapOverlay(cfg);
 
 var map = new L.Map('map-canvas', {
-  center: new L.LatLng(25.6586, -80.3568),
-  zoom: 4,
+  center: new L.LatLng(38.25, 21.75),
+  zoom: 13,
   layers: [baseLayer, heatmapLayer]
 });
 
 heatmapLayer.setData(testData);
 
 </script>
+
+
+
+
 
 </body>
 

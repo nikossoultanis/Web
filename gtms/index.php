@@ -2,8 +2,10 @@
 
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Nikos & Vaios Mapping Company Co. Ltd.</title>
+    <title>Welcome</title>
     <link rel="stylesheet" href="style.css" />
+    	
+    <link rel='icon' href='favicon.png' type='image/x-icon' />
 </head>
 
 <body>

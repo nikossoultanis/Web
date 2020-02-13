@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sign Up</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel='icon' href='favicon.png' type='image/x-icon' />
 </head>
 
 <body>

@@ -8,8 +8,15 @@
 ?>
 
 <html>
-    <head>    
+    <head>  
+        <meta name="viewport" content="width=device-width, initial-scale=1">  
         <link rel="stylesheet" href="style.css" />
+        <link rel='icon' href='favicon.png' type='image/x-icon' />
+        <?php
+            $username_disp = $_SESSION['user']['username'];
+            $userid = $_SESSION['user']['userid'];
+            echo "<title>$username_disp: Upload</title>";
+        ?>
     </head>
     <form action="parser.php" class="sign-in-form" method="POST" enctype="multipart/form-data">
     <?php

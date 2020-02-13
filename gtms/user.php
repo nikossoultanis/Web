@@ -10,6 +10,12 @@
 
 <head>
     <link rel="stylesheet" href="style.css" />
+    <link rel='icon' href='favicon.png' type='image/x-icon' />
+    <?php
+            $username_disp = $_SESSION['user']['username'];
+            $userid = $_SESSION['user']['userid'];
+            echo "<title>$username_disp</title>";
+        ?>
 </head>
 
 <body>
