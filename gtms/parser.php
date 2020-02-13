@@ -53,19 +53,13 @@ if ($uploadOk == 0) {
 }
 
 
+$decoded = \JsonMachine\JsonMachine::fromFile($target_file, '/locations');
 
 
-$decoded = \JsonMachine\JsonMachine::fromFile($target_file);
 
-// var_dump ($decoded);
-// foreach($decoded as $locations){
-//     foreach($locations as $item){
-//     echo($item["timestampMs"]); }
-// }
-
-foreach ($decoded as $locations)
-{
-    foreach($locations as $item)
+// foreach ($decoded as $locations)
+// {
+    foreach($decoded as $item)
     {
         $heading = 0;
         $activity_type = 0;
@@ -83,25 +77,11 @@ foreach ($decoded as $locations)
         $latitude = $item["latitudeE7"] / $E7;
         $longitude = $item["longitudeE7"] / $E7;
         $accuracy = $item["accuracy"];
-        echo $latitude."<br>";
-        echo $longitude;
-
-    // if(6371*acos(cos(deg2rad(38.230462))*cos(deg2rad($latitude))*cos(deg2rad($longitude) - deg2rad(21.753150)) + sin(deg2rad(38.230462)))*sin(deg2rad($latitude)) <= 10){
-    // break;
-    // }
-
-    echo acos(sin($latitude*0.0175)* sin(38.230462 * 0.0175) 
-    + cos($latitude * 0.0175) * cos(38.230462*0.0175) * 
-    cos((21.753150 * 0.0175) - ($longitude * 0.0175)))*6371;
-    echo "<br>";
 
     if(acos(sin($latitude*0.0175)* sin(38.230462 * 0.0175) 
     + cos($latitude * 0.0175) * cos(38.230462*0.0175) * 
     cos((21.753150 * 0.0175) - ($longitude * 0.0175)))*6371 >= 10)
     {
-        echo "<br>";
-        echo "bike";
-        echo "<br>";
         continue;
     }
     if(!empty($item["velocity"])){
@@ -150,6 +130,6 @@ foreach ($decoded as $locations)
     }
 
     }
-}
+// }
 
 ?>

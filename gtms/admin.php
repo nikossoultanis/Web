@@ -40,9 +40,18 @@
         <form action="delete.php">
             <button class="parse-btn" onclick="return confirm('E!?');">🗑️ Delete</button>
         </form>
+        <form action="map.php">
+            <button class="parse-btn" type="submit" >🗺️ Map</button>
+        </form>
+
+        <form action="dashboard.php">
+            <button class="parse-btn" type="submit" >📈 Dashboard</button>
+        </form>
+
         <form action="user.php">
             <button class="parse-btn" type="submit" >👤 User Mode</button>
         </form>
+
     </div>
 
 </body>

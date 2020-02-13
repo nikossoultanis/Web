@@ -36,6 +36,12 @@
                 <button type=\"submit\" class=\"parse-btn\" name=\"userid\" value=\"$userid\">📤 Upload & Parse</button>
             </form>";
         ?>
+        <form action="map.php">
+            <button class="parse-btn" type="submit" >🗺️ Map</button>
+        </form>
+        <form action="dashboard.php">
+            <button class="parse-btn" type="submit" >📈 Dashboard</button>
+        </form>
 
         <?php
             if ($_SESSION['user']['admin'] == 1){

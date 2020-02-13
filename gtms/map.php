@@ -1,5 +1,72 @@
-<?php 
-  include 'map_filter.php'
+<?php    
+    include 'functions.php';
+    
+    if (!isset($_SESSION['user'])) {
+        header('location: sign_in.php');
+        exit;
+    }
+
+    if (!empty($_POST['selected_day1']))
+    {
+        $sday1 = $_POST['selected_day1'];
+    }
+    else {$sday1 = 0;}
+    if (!empty($_POST['selected_month1']))
+    {
+        $smonth1 = $_POST['selected_month1'];
+    }else {$smonth1 = 0;}
+
+    if (!empty($_POST['selected_year1']))
+    {
+        $syear1 = $_POST['selected_year1'];
+    } else {$syear1 = 2009;}
+
+    //-----------//
+    if (!empty($_POST['selected_day2']))
+    {
+        $sday2 = $_POST['selected_day2'];
+        if ($sday2 == 0) {
+          $sday2 = 32;
+        }
+    }
+    else {$sday2 = 32;}
+    if (!empty($_POST['selected_month2']))
+    {
+        $smonth2 = $_POST['selected_month2'];
+        if ($smonth2 == 0) {
+          $smonth2 = 13;
+        }
+    }else {$smonth2 = 13;}
+
+    if (!empty($_POST['selected_year2']))
+    {
+        $syear2 = $_POST['selected_year2'];
+        if ($syear2 == 2009) {
+          $syear2 = 2031;
+        }
+    } else {$syear2 = 2031;}
+
+    $location = array();
+    $final_loc = array();
+    $userid = $_SESSION['user']['userid'];
+    $query = "SELECT longitude, latitude, timestamp/1000 as `time`,  COUNT(*) AS count FROM locations WHERE userid = '$userid'  GROUP BY latitude, longitude";
+    $results = mysqli_query($conn, $query);
+    $E7 = 10**7;
+
+    while($temp = $results->fetch_assoc())
+    {
+        if ( ((int)date('d', $temp["time"]) >= $sday1   && (int)date('d', $temp["time"]) <= $sday2   ) && 
+             ((int)date('m', $temp["time"]) >= $smonth1 && (int)date('m', $temp["time"]) <= $smonth2 ) && 
+             ((int)date('Y', $temp["time"]) >= $syear1  && (int)date('Y', $temp["time"]) <= $syear2  ) ) {
+            $location['lng'] = ((double) $temp['longitude'] );
+            $location['lat'] = ((double) $temp['latitude']);
+            $location['count'] = (int) $temp['count'];
+            array_push($final_loc, $location);
+        }else{
+            continue;
+        }
+    } 
+    $final_loc = json_encode($final_loc);
 ?>
 
 <html>
@@ -13,16 +80,31 @@
 </head>
 
 <body>
- <form method="post" name="date-form" action="map_filter.php">
-    <div class="container" id="select">
+ <form method="post" name="date-form" action="map.php">
 
-        <select name="selected_day" class="bear-dates">
+    <div class="container" id="select">  
+        <select name="selected_day1" class="bear-dates">
           <?php 
             for ($i=0; $i <= 31; $i++)
             {
               echo "<option value=\"$i\">";
               if ($i == 0) {
-                echo "(None)";
+                echo "(From: Day)";
+              }
+              else {
+                echo "$i";
+              }
+              echo "</option>";
+            }
+          ?>
+        </select>
+        <select name="selected_day2" class="bear-dates">
+          <?php 
+            for ($i=0; $i <= 31; $i++)
+            {
+              echo "<option value=\"$i\">";
+              if ($i == 0) {
+                echo "(To: Day)";
               }
               else {
                 echo "$i";
@@ -32,13 +114,28 @@
           ?>
         </select>
 
-        <select name="selected_month" class="bear-dates">
+        <select name="selected_month1" class="bear-dates">
           <?php 
             for ($i=0; $i <= 12; $i++)
             {
               echo "<option value=\"$i\">";
               if ($i == 0) {
-                echo "(None)";
+                echo "(From: Month)";
+              }
+              else {
+                echo "$i";
+              }
+              echo "</option>";
+            }
+          ?>
+        </select>
+        <select name="selected_month2" class="bear-dates">
+          <?php 
+            for ($i=0; $i <= 12; $i++)
+            {
+              echo "<option value=\"$i\">";
+              if ($i == 0) {
+                echo "(To: Month)";
               }
               else {
                 echo "$i";
@@ -48,13 +145,13 @@
           ?>
         </select>
 
-        <select name="selected_year" class="bear-dates">
+        <select name="selected_year1" class="bear-dates">
           <?php 
-            for ($i=2009; $i <= 2030; $i++)
+            for ($i=2015; $i <= 2023; $i++)
             {
               echo "<option value=\"$i\">";
-              if ($i == 2009) {
-                echo "(None)";
+              if ($i == 2015) {
+                echo "(From: Year)";
               }
               else {
                 echo "$i";
@@ -63,12 +160,31 @@
             }
           ?>
         </select>
+        <select name="selected_year2" class="bear-dates">
+          <?php 
+            for ($i=2015; $i <= 2023; $i++)
+            {
+              echo "<option value=\"$i\">";
+              if ($i == 2015) {
+                echo "(To: Year)";
+              }
+              else {
+                echo "$i";
+              }
+              echo "</option>";
+            }
+          ?>
+        </select>
+
+
     <div id="text">
         <button class="inline-button">Select Date</button>
     </div>
     </div>
+    </form>
 
- </form>
+
+
 <div id="map-canvas"></div>
 <script type="text/javascript" src="node_modules\heatmap.js\build\heatmap.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
@@ -76,12 +192,11 @@
 
 <script type="text/javascript">
 
-// var data22 = 
-// console.log(data22);
+// // console.log(data22);
 
 var testData = {
   max: 100,
-  data: []
+  data: <?php echo $final_loc; ?>
 };
 console.log(testData);
 var baseLayer = L.tileLayer(
@@ -122,10 +237,6 @@ var map = new L.Map('map-canvas', {
 heatmapLayer.setData(testData);
 
 </script>
-
-
-
-
 
 </body>
 
