@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Simple Date, Month, Year Dropdown with Vanilla Javascript </title>
+    <link href="resources/style.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body class="bg-whitesmoke">
+
+
+    <div class="container" id="select">
+
+
+        <select class="bear-dates"></select>
+
+        <select class="bear-months"></select>
+
+        <select class="bear-years"></select>
+        <button class="parse-btn">Select Date</button>
+    </div>
+    <div>
+        <button class="parse-btn">Select Date</button>
+    </div>
+
+
+
+    <script src="resources/calender.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        dates('option');
+        months('option');
+        //You can change the startYear(1990) and endYear(2017)
+        years('option', 2000, 2017);
+    </script>
+
+</body>
+
+</html>
