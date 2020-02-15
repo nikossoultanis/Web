@@ -37,7 +37,8 @@ body {
     padding: 10px;
     margin: 10px 0;
     width: 100%;
-    border: 1px solid #1c8adb;
+    border: 1px solid #D0D0D0;
+    background-color: #ffffff;
     outline: none;
 }
 
@@ -152,11 +153,9 @@ input[type="file"] {
 #map-canvas {
     max-width: 100%;
     max-height: 100%;
-    max-width: 100%;
-    max-height: 100%;
     margin: auto;
     position: absolute;
-    top: 57px;
+    top: 500px;
     left: 0;
     bottom: 0;
     right: 0;
@@ -167,9 +166,11 @@ section {
 }
 
 .container {
+    box-sizing: border-box;
     max-width: auto;
-    position: center;
-    left: 10px;
+    position: center relative;
+    left: 0px;
+    padding-left: 10px;
     display: inline-block;
 }
 
@@ -204,4 +205,54 @@ section {
     outline: none;
     cursor: pointer;
     background-color: #1c8adb;
+}
+
+.home {
+    color: white;
+    width: 40px;
+    padding: 10px;
+    border-radius: 20px;
+    font-size: 15px;
+    margin: 10px 0;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    top: 0;
+    right: 0;
+    background-color: #1c8adb;
+    z-index: 5;
+}
+
+.ontop {
+    position: relative;
+    z-index: 5;
+}
+
+.input-div {
+    display: inline-block;
+    z-index: -1;
+}
+
+.overSelect {
+    position: absolute;
+    z-index: -1;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+#checkboxes {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    width: auto;
+    height: auto;
+    background: #ffffff00;
+}
+
+#checkboxes label {
+    display: block;
 }
