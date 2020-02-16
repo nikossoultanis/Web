@@ -155,7 +155,7 @@ input[type="file"] {
     max-height: 100%;
     margin: auto;
     position: absolute;
-    top: 500px;
+    top: 0;
     left: 0;
     bottom: 0;
     right: 0;
@@ -217,11 +217,7 @@ section {
     border: none;
     outline: none;
     cursor: pointer;
-    position: relative;
-    top: 0;
-    right: 0;
     background-color: #1c8adb;
-    z-index: 5;
 }
 
 .ontop {
@@ -255,4 +251,18 @@ section {
 
 #checkboxes label {
     display: block;
+}
+
+.charts-form {
+    width: 700px;
+    background: rgba(0, 0, 0, 0.253);
+    border-radius: 20px;
+    padding: 20px;
+    margin: 0% auto 0;
+    text-align: center;
+}
+
+.inline-btn {
+    width: 50px;
+    display: inline-block;
 }

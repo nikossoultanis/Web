@@ -6,84 +6,10 @@
     exit;
   }
 
-  if (!empty($_POST['selected_week1']))  { $sweek1  = $_POST['selected_week1'];  } else { $sweek1  = 0; }
-  if (!empty($_POST['selected_day1']))   { $sday1   = $_POST['selected_day1'];   } else { $sday1   = 0; }
-  if (!empty($_POST['selected_month1'])) { $smonth1 = $_POST['selected_month1']; } else { $smonth1 = 0; }
-  if (!empty($_POST['selected_year1']))  { $syear1  = $_POST['selected_year1'];  } else { $syear1  = 2015; }
-
-  //-----------//
-  if (!empty($_POST['selected_week2'])) {
-    $sweek2 = $_POST['selected_week2'];
-    if ($sweek2 == 0) { $sweek2 = 8; }
-  } else { $sweek2 = 8; }
-  if (!empty($_POST['selected_day2'])) {
-    $sday2 = $_POST['selected_day2'];
-    if ($sday2 == 0) { $sday2 = 32; }
-  } else { $sday2 = 32; }
-  if (!empty($_POST['selected_month2'])) {
-    $smonth2 = $_POST['selected_month2'];
-    if ($smonth2 == 0) { $smonth2 = 13; }
-  } else { $smonth2 = 13; }
-  if (!empty($_POST['selected_year2'])) {
-    $syear2 = $_POST['selected_year2'];
-    if ($syear2 == 2015) { $syear2 = 2024; }
-  } else { $syear2 = 2024; }
-
   $userid = $_SESSION['user']['userid'];
+  $act_types = ["0", "EXITING_VEHICLE", "IN_BUS", "IN_CAR", "IN_FOUR_WHEELER_VEHICLE", "IN_RAIL_VEHICLE", "IN_ROAD_VEHICLE", "IN_TWO_WHEELER_VEHICLE", "IN_VEHICLE", "ON_BICYCLE", "ON_FOOT", "RUNNING", "STILL", "TILTING", "UNKNOWN", "WALKING"]
+
 ?>
-
-
-<!-- DAY MONTH YEAR FETCH -->
-
-<?php 
-  $sql = "SELECT timestamp/1000 as `timestamp` FROM locations WHERE userid = '$userid';";
-  $results = $conn->query($sql);
-
-  $year_count = array_fill(0, 8, 0);
-  $month_count = array_fill(0, 12, 0);
-  $week_count = array_fill(0, 7, 0);
-  $day_count = array_fill(0, 31, 0);
-
-
-  while($temp = $results->fetch_assoc()) {
-    if ( ((int)date('N', $temp["timestamp"]) >= $sweek1  && (int)date('N', $temp["timestamp"]) <= $sweek2  ) &&
-         ((int)date('d', $temp["timestamp"]) >= $sday1   && (int)date('d', $temp["timestamp"]) <= $sday2   ) && 
-         ((int)date('m', $temp["timestamp"]) >= $smonth1 && (int)date('m', $temp["timestamp"]) <= $smonth2 ) && 
-         ((int)date('Y', $temp["timestamp"]) >= $syear1  && (int)date('Y', $temp["timestamp"]) <= $syear2  ) ) {
-      for ($i = 2016; $i <= 2023; $i++) {
-        if( (int)date('Y', $temp["timestamp"] ) == $i) { $year_count[$i - 2016]++; } 
-      }
-      for ($i = 1; $i <= 12; $i++) {
-        if( (int)date('m', $temp["timestamp"] ) == $i) { $month_count[$i - 1]++; }
-      }
-      for ($i = 1; $i <= 31; $i++) {
-        if( (int)date('d', $temp["timestamp"] ) == $i) { $day_count[$i - 1]++; } 
-      }
-      for ($i = 1; $i <= 7; $i++) {
-        if( (int)date('N', $temp["timestamp"] ) == $i) { $week_count[$i - 1]++; } 
-      }
-    } else { continue; }
-  } 
-
-  $year_count  = json_encode($year_count);
-  $month_count = json_encode($month_count);
-  $day_count   = json_encode($day_count);
-  $week_count  = json_encode($week_count);
-
-// ACTIVITIES
-  $activity_type = array();
-  $activity_count = array();
-  $sql = "SELECT activity_type, COUNT(*) AS `number` FROM locations WHERE userid = '$userid' GROUP BY activity_type" ;
-  $data_act = $conn->query($sql);
-  while($temp = $data_act->fetch_assoc()) {
-    array_push($activity_type, $temp["activity_type"]);
-    array_push($activity_count, $temp["number"]);
-  }
-  $activity_type = json_encode($activity_type);
-  $activity_count = json_encode($activity_count);
-?>
-
-<!-- ADMIN: ENTRIES PER USER FETCH-->
 
 <!-- HTML -->
 <html>
@@ -100,9 +26,9 @@
 
 <body>
 
-<form method="post" name="date-form" action="dashboard.php">
-    <div class="container ontop" id="select">  
-      <button class="home" formaction="user.php">🏠</button>
+<div class="container ontop" id="select">
+  <form method="post" name="date-form" id="filters" action="" onsubmit="refresh(); return false">
+  <button type="button" class="home inline-button" onclick="window.location.href='user.php'">🏠</button>
       <select class="input-box" name="selected_day1" class="bear-dates">
         <?php 
           for ($i=0; $i <= 31; $i++) {
@@ -184,16 +110,112 @@
           }
         ?>
       </select>
+      <div class="input-div" id="activity-btn" onclick="showCheckboxes()">
+        <select class="input-box" ><option selected disabled hidden>Activities</option></select>
+        <div class="overSelect"></div>
+      <div id="checkboxes" class="input-div">
+        <?php 
+          for ($i = 0; $i < sizeof($act_types); $i++) {
+            echo "<label class=\"input-box\" for=\"" . $act_types[$i] . "\"> <input type=\"checkbox\" name=\"act_types_chk[]\" value = \" " . $act_types[$i] . "\" />" . $act_types[$i] . "</label>";
+          }
+        ?>
+      </div>
+      </div>
       <div id="text"> <button class="inline-button">Select Date</button> </div>
-    </div>
+      <script>
+        var expanded = false;
+        function showCheckboxes() {
+          var checkboxes = document.getElementById("checkboxes");
+          var act = document.getElementById("activity-btn");
+          var pos = act.getBoundingClientRect();
+          if (!expanded) {
+            checkboxes.style.display = "block";
+            checkboxes.style.left = pos.left;
+            expanded = true;
+          } else {
+            checkboxes.style.display = "none";
+            expanded = false;
+          }
+        }
+
+      </script>
+        
+
   </form>
+</div>
+
+<script>
+  document.getElementById("filters").reset();
+</script>
+
+  <script>
+    function refresh(){
+      var req = new XMLHttpRequest();
+      activity_chart.data.datasets[0].data = [];
+      year_chart.data.datasets[0].data = [];
+      month_chart.data.datasets[0].data = [];
+      day_chart.data.datasets[0].data = [];
+      week_chart.data.datasets[0].data = [];
+
+      req.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+          console.log(this.responseText);
+          var response_part = this.responseText.split('|');
+          var activity_count = JSON.parse(response_part[0]);
+          var year_count = JSON.parse(response_part[1]);
+          var month_count = JSON.parse(response_part[2]);
+          var day_count = JSON.parse(response_part[3]);
+          var week_count = JSON.parse(response_part[4]);
+          for (var i = 0; i < activity_count.length; i++) {
+            activity_chart.data.datasets[0].data.push(activity_count[i]);
+            activity_chart.update();
+          }
+          for (var i = 0; i < year_count.length; i++){
+            year_chart.data.datasets[0].data.push(year_count[i]);
+            year_chart.update();
+          }
+          for (var i = 0; i < month_count.length; i++){
+            month_chart.data.datasets[0].data.push(month_count[i]);
+            month_chart.update();
+          }
+          for (var i = 0; i < day_count.length; i++){
+            day_chart.data.datasets[0].data.push(day_count[i]);
+            day_chart.update();
+          }
+          for (var i = 0; i < week_count.length; i++){
+            week_chart.data.datasets[0].data.push(week_count[i]);
+            week_chart.update();
+          }
+          activity_chart.update();
+          year_chart.update();
+          month_chart.update();
+          day_chart.update();
+          week_chart.update();
+        }
+      };
+      req.open("POST", "dashboard-backend.php", true);
+      var filter = new FormData(document.getElementById("filters"));
+      req.send(filter);
+    };
+  </script>
+  
+
+<div class="charts-form">
+  <h3 class="welcome">Activities</h3>
+  <canvas id="activity_chart" width="200" height="50"></canvas>
+  <h3 class="welcome">Weekdays</h3>
+  <canvas id="week_chart" width="200" height="50"></canvas>
+  <h3 class="welcome">Days</h3>
+  <canvas id="day_chart" width="200" height="50"></canvas>
+  <h3 class="welcome">Months</h3>
+  <canvas id="month_chart" width="200" height="50"></canvas>
+  <h3 class="welcome">Years</h3>
+  <canvas id="year_chart" width="200" height="50"></canvas>
+</div>
 
 
-<canvas id="activity_chart" width="200" height="50"></canvas>
-<canvas id="week_chart" width="200" height="50"></canvas>
-<canvas id="day_chart" width="200" height="50"></canvas>
-<canvas id="month_chart" width="200" height="50"></canvas>
-<canvas id="year_chart" width="200" height="50"></canvas>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 
@@ -203,7 +225,7 @@ var activity_chart_ctx = document.getElementById('activity_chart').getContext('2
 var activity_chart = new Chart(activity_chart_ctx, {
     type: 'bar',
     data: {
-        labels: [],
+        labels: ["0", "EXITING_VEHICLE", "IN_BUS", "IN_CAR", "IN_FOUR_WHEELER_VEHICLE", "IN_RAIL_VEHICLE", "IN_ROAD_VEHICLE", "IN_TWO_WHEELER_VEHICLE", "IN_VEHICLE", "ON_BICYCLE", "ON_FOOT", "RUNNING", "STILL", "TILTING", "UNKNOWN", "WALKING"],
         
         datasets: [{
             data: [],
@@ -232,17 +254,7 @@ var activity_chart = new Chart(activity_chart_ctx, {
         }
     }
 });
-
-<?php echo "var activity_type = " . $activity_type . ";\n"; ?>
-<?php echo "var activity_count = " . $activity_count . ";\n"; ?>
-for (var i = 0; i < activity_count.length; i++) {
-  activity_chart.data.labels.push(activity_type[i]);
-  activity_chart.data.datasets[0].data.push(activity_count[i]);
-  activity_chart.update();
-}
-activity_chart.update();
-
-
+  
 // graph WEEK
 var week_chart_ctx = document.getElementById('week_chart').getContext('2d');
   var week_chart = new Chart(week_chart_ctx, {
@@ -276,15 +288,7 @@ var week_chart_ctx = document.getElementById('week_chart').getContext('2d');
         }
     }
 });
-
-<?php echo "var week_count = " . $week_count . ";\n"; ?>
-  for (var i = 0; i < week_count.length; i++) {
-    week_chart.data.datasets[0].data.push(week_count[i]);
-    week_chart.update();
-  }
-  week_chart.update();
-
-// graph DAY
+// DAY
 var day_chart_ctx = document.getElementById('day_chart').getContext('2d');
   var day_chart = new Chart(day_chart_ctx, {
       type: 'bar',
@@ -317,18 +321,7 @@ var day_chart_ctx = document.getElementById('day_chart').getContext('2d');
         }
     }
 });
-
-<?php echo "var day_count = " . $day_count . ";\n"; ?>
-  for (var i = 0; i < day_count.length; i++) {
-    day_chart.data.datasets[0].data.push(day_count[i]);
-    day_chart.update();
-  }
-  day_chart.update();
-
-
-
-
-// graph MONTH
+//MONTH
 var month_chart_ctx = document.getElementById('month_chart').getContext('2d');
 var month_chart = new Chart(month_chart_ctx, {
     type: 'bar',
@@ -361,15 +354,7 @@ var month_chart = new Chart(month_chart_ctx, {
         }
     }
 });
-
-<?php echo "var month_count = " . $month_count . ";\n"; ?>
-    for (var i = 0; i < month_count.length; i++) {
-      month_chart.data.datasets[0].data.push(month_count[i]);
-      month_chart.update();
-    }
-    month_chart.update();
-
-// graph YEAR
+//YEAR
 var year_chart_ctx = document.getElementById('year_chart').getContext('2d');
   var year_chart = new Chart(year_chart_ctx, {
       type: 'bar',
@@ -403,12 +388,7 @@ var year_chart_ctx = document.getElementById('year_chart').getContext('2d');
     }
 });
 
-<?php echo "var year_count = " . $year_count . ";\n"; ?>
-    for (var i = 0; i < year_count.length; i++) {
-      year_chart.data.datasets[0].data.push(year_count[i]);
-      year_chart.update();
-    }
-    year_chart.update();
+refresh();
 </script>
 
-<?php 
+

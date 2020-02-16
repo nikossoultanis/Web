@@ -26,31 +26,20 @@
             $userid = $_SESSION['user']['userid'];
             echo "<h1>🔑 $username_disp<h1>";
         ?>
-        <form action="functions.php">
-            <button class="parse-btn" type="submit" name="log-out-btn">👋 Log out</button>
+        <form>
+            <button class="parse-btn" type="submit" formaction="map.php" >🗺️ Map</button>
+            <button class="parse-btn" type="submit" formaction="dashboard.php" >📈 Dashboard</button>
+            <button class="parse-btn" formaction="delete.php" onclick="return confirm('E!?');">🗑️ Delete</button>
+            <button class="parse-btn" formaction="user.php" type="submit" >👤 User Mode</button>
+            <button class="parse-btn" type="submit" name="log-out-btn" formaction="functions.php">👋 Log out</button>
         </form>
-
         <?php
-        echo "
-            <form method=\"post\" action=\"upload.php\">
-            
-                <button type=\"submit\" class=\"parse-btn\" name=\"userid\" value=\"$userid\">📤 Upload & Parse</button>
-            </form>";
+            echo "
+                <form method=\"post\" action=\"upload.php\">
+                
+                    <button type=\"submit\" class=\"parse-btn\" name=\"userid\" value=\"$userid\">📤 Upload</button>
+                </form>";
         ?>
-        <form action="delete.php">
-            <button class="parse-btn" onclick="return confirm('E!?');">🗑️ Delete</button>
-        </form>
-        <form action="map.php">
-            <button class="parse-btn" type="submit" >🗺️ Map</button>
-        </form>
-
-        <form action="dashboard.php">
-            <button class="parse-btn" type="submit" >📈 Dashboard</button>
-        </form>
-
-        <form action="user.php">
-            <button class="parse-btn" type="submit" >👤 User Mode</button>
-        </form>
 
     </div>
 
