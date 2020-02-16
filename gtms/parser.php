@@ -21,35 +21,18 @@ echo $userid;
 $target_dir = "uploads/";
 $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 $uploadOk = 1;
-//$fileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
 if($target_file) {
-// Check if file already exists
-// if (file_exists($target_file)) {
-//     echo "Sorry, file already exists.";
-//     $uploadOk = 0;
-// }
-// Check file size
-// if ($_FILES["fileToUpload"]["size"] > 5000000) {
-//     echo "Sorry, your file is too large.";
-//     $uploadOk = 0;
-// }
-// Allow certain file formats
-// if($fileType != "json") {
-//     $_FILES["error"] = "Sorry, only JSON files are allowed.";
-//     $uploadOk = 0;
-// }
-// Check if $uploadOk is set to 0 by an error
-if ($uploadOk == 0) {
-    $_FILES["error"] = "Sorry, your file was not uploaded.";
-    header('location: upload.php');
-// if everything is ok, try to upload file
-} else {
-    if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
-        echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+
+    if ($uploadOk == 0) {
+        $_FILES["error"] = "Sorry, your file was not uploaded.";
+        header('location: upload.php');
+
     } else {
-        echo "Sorry, there was an error uploading your file.";
-    }
-}
+        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+            echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+        } else {
+            exit;        }
+        }
 }
 
 
@@ -111,8 +94,7 @@ $decoded = \JsonMachine\JsonMachine::fromFile($target_file, '/locations');
                 if(mysqli_query($conn, $sql)){
                     //echo "Successfully Uploaded.";
                 } else{
-                   // echo $conn->error . "<br>";
-                   // echo "Error on Upload.";
+                    exit;
                 }
             }
         }
@@ -123,13 +105,37 @@ $decoded = \JsonMachine\JsonMachine::fromFile($target_file, '/locations');
         if(mysqli_query($conn, $sql)){
             //echo "Successfully Uploaded.";
         } else{
-           // echo $conn->error . "<br>";
-           // echo "Error on Upload.";
+            exit;
         }
 
     }
 
     }
 // }
+$query = "SELECT activity_type,  COUNT(*) AS count FROM locations WHERE userid = '$userid'";
+$all_activities = mysqli_query($conn, $query);
+$query2 = "SELECT activity_type,  COUNT(*) AS count FROM locations WHERE userid = '$userid' AND activity_type LIKE 'ON_%' OR activity_type LIKE 'RUN%' OR activity_type LIKE 'STI%' OR activity_type LIKE 'WALK%'";
+$eco = mysqli_query($conn, $query2);
+$all_activities = $all_activities->fetch_assoc();
+$eco = $eco->fetch_assoc();
+$all_activities = (int) $all_activities['count'];
+$eco = (int) $eco['count'];
+$ecolevel = round( $eco / $all_activities,2 ) * 100;
+if($all_activities == 0)
+{
+    $ecolevel = 0;
+}else{
+$ecolevel = round( $eco / $all_activities,2 ) * 100;
+}
+echo $userid;
+echo $ecolevel;
+$delete_query = "DELETE FROM uploads
+WHERE userid = '$userid';";
+mysqli_query($conn, $delete_query);
+
+$query3 = "INSERT INTO uploads ( userid, last_upload, score ) VALUES ( '$userid', NOW(), $ecolevel )";
+mysqli_query($conn, $query3);
+header('location: user.php');
+exit;
 
 ?>

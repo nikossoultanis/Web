@@ -5,15 +5,13 @@ $srv = "localhost";
 $usrnm = "root";
 $pass = "";
 $db =  "data";
-// Create connection
+
 $conn = mysqli_connect($srv, $usrnm, $pass, $db);
 
-// Check connection
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
     echo "Failed";
 }
-
 
 $username = "";
 $email    = "";
@@ -31,22 +29,36 @@ function sign_up(){
 	$password1 =  e($_POST['password1']);
     $password2 =  e($_POST['password2']);
 	$password  = md5($password1); //encrypt the password before saving in the database
-    $userid    = md5($email.$password1);
-	$query = "INSERT INTO users (userid, username, email, password, admin) 
-        VALUES('$userid', '$username', '$email', '$password', 0)";
-	if (!mysqli_query($conn, $query))
+	$userid    = md5($email.$password1);
+	if(strlen($password1) <= 8) {
+        $passwordErr = "Your Password Must Contain At Least 8 Characters!";
+    }elseif(!preg_match("#[0-9]+#",$password1)){
+        $passwordErr = "Your Password Must Contain At Least 1 Number!";
+	}elseif(!preg_match("#[A-Z]+#",$password1)){
+        $passwordErr = "Your Password Must Contain At Least 1 Capital Letter!";
+	}elseif(!preg_match("#[a-z]+#",$password1)) {
+        $passwordErr = "Your Password Must Contain At Least 1 Lowercase Letter!";
+	}elseif(strcmp($password1, $password2)!== 0){
+		$passwordErr = "Different Passwords!";
+	}else{
+		$query = "INSERT INTO users (userid, username, email, password, admin) 
+			VALUES('$userid', '$username', '$email', '$password', 0)";
+		if (!mysqli_query($conn, $query)){
+			$_SESSION["error"] = "😔 Duplicate Credentials";
+			header('location: sign_up.php');
+			exit;
+			}
+			header('location: sign_in.php');
+			exit;
+		}
+		// var_dump($passwordErr);
+	if(!empty($passwordErr))
 	{
-		$_SESSION["error"] = "😔 Duplicate Credentials";
+		$_SESSION["error"] = $passwordErr;
 		header('location: sign_up.php');
 		exit;
 	}
 
-	// get id of the created user
-	//$logged_in_user_id = mysqli_insert_id($conn);
-	//$_SESSION['user'] = getUserById($logged_in_user_id); // put logged in user in session
-	//$_SESSION['success']  = "You are now logged in";
-	header('location: sign_in.php');
-	exit;
 }
 function getUserById($id){
 	global $conn;
@@ -75,21 +87,6 @@ function display_error() {
 	}
 }
 
-function isLoggedIn()
-{
-	if (isset($_SESSION['user'])) {
-		return true;
-	}else{
-		return false;
-	}
-}
-// LOG OUT
-if (isset($_GET['log-out-btn'])){
-	if(isLoggedIn()){
-		logout();
-	}
-}
-// LOG IN 
 
 if (isset($_POST['sign-in-btn'])) {
 	if (!isLoggedIn()){
@@ -102,6 +99,15 @@ if (isset($_POST['sign-in-btn'])) {
 	}
 }
 
+function isLoggedIn()
+{
+	if (isset($_SESSION['user'])) {
+		return true;
+	}else{
+		return false;
+	}
+}
+
 function logout()
 {
 	session_destroy();
@@ -109,12 +115,17 @@ function logout()
 	header('location: index.php');
 	exit;
 }
+// LOG OUT ACTION
+if (isset($_GET['log-out-btn'])){
+	if(isLoggedIn()){
+		logout();
+	}
+}
 
 // LOGIN USER
 function login(){
 	global $conn, $username, $errors;
 
-	// grap form values
 	$username = e($_POST['username']);
 	$password = e($_POST['password']);
 
@@ -124,21 +135,17 @@ function login(){
 	var_dump($results);
 
 	if (mysqli_num_rows($results) == 1) { // user found
-		// check if user is admin or user
 		$logged_in_user = mysqli_fetch_assoc($results);
 		if ($logged_in_user['admin'] == 1) {
 			$_SESSION['user'] = $logged_in_user;
-			$_SESSION['success']  = "You are now logged in";
 			header('location: admin.php');
 		}else{
 			$_SESSION['user'] = $logged_in_user;
-			$_SESSION['success']  = "You are now logged in";
 			echo "user";
 			header('location: user.php');
 			exit;
 		}
 	}else {
-		//array_push($errors, "Wrong username/password combination");
 		$_SESSION["error"] = "😔 Wrong Credentials";
 		header('location: sign_in.php');
 		exit;
@@ -149,6 +156,5 @@ function login(){
 function alert($msg) {
 	echo "<script type='text/javascript'>alert('$msg');</script>";
 }
-
 
 ?>

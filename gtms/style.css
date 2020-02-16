@@ -266,3 +266,8 @@ section {
     width: 50px;
     display: inline-block;
 }
+
+.last-upload {
+    font-size: 15px;
+    font-family: monospace;
+}

@@ -8,6 +8,11 @@
 
     $query = "TRUNCATE `locations`";
     mysqli_query($conn, $query);
+    $query = "TRUNCATE `users`";
+    mysqli_query($conn, $query);
+    $query = "TRUNCATE `uploads`";
+    mysqli_query($conn, $query);
+
     header('location: admin.php');
     exit;
 ?>

@@ -43,7 +43,12 @@
 
   $location = array();
   $final_loc = array();
-  $query = "SELECT longitude, latitude, timestamp/1000 as `timestamp`,  COUNT(*) AS count FROM locations WHERE userid = '$userid' " . $act_sql_string . " GROUP BY latitude, longitude";
+  if ($_SESSION['user']['admin'] == 1){
+    $query = "SELECT longitude, latitude, timestamp/1000 as `timestamp`,  COUNT(*) AS count FROM locations WHERE 1" . $act_sql_string . " GROUP BY latitude, longitude";
+  }
+  else {
+    $query = "SELECT longitude, latitude, timestamp/1000 as `timestamp`,  COUNT(*) AS count FROM locations WHERE userid = '$userid' " . $act_sql_string . " GROUP BY latitude, longitude";
+  }
 
   $results = mysqli_query($conn, $query);
   while($temp = $results->fetch_assoc()) {

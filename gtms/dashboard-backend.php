@@ -38,7 +38,11 @@
     }
   } else { $act_filter = $act_types; }
 
-  $sql = "SELECT timestamp/1000 as `timestamp`, activity_type FROM locations WHERE userid = '$userid'";
+  if ($_SESSION['user']['admin'] == 1){
+    $sql = "SELECT timestamp/1000 as `timestamp`, activity_type FROM locations";
+  } else {
+    $sql = "SELECT timestamp/1000 as `timestamp`, activity_type FROM locations WHERE userid = '$userid'"; 
+  }
   $results = $conn->query($sql);
 
   $year_count = array_fill(0, 8, 0);

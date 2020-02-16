@@ -29,7 +29,7 @@
         <form>
             <button class="parse-btn" type="submit" formaction="map.php" >🗺️ Map</button>
             <button class="parse-btn" type="submit" formaction="dashboard.php" >📈 Dashboard</button>
-            <button class="parse-btn" formaction="delete.php" onclick="return confirm('E!?');">🗑️ Delete</button>
+            
             <button class="parse-btn" formaction="user.php" type="submit" >👤 User Mode</button>
             <button class="parse-btn" type="submit" name="log-out-btn" formaction="functions.php">👋 Log out</button>
         </form>
@@ -40,7 +40,12 @@
                     <button type=\"submit\" class=\"parse-btn\" name=\"userid\" value=\"$userid\">📤 Upload</button>
                 </form>";
         ?>
-
+        <form action = export.php>
+        <button class="parse-btn" type="submit" >📁 Export</button>
+        </form>
+        <form action="delete.php">
+        <button class="parse-btn" onclick="return confirm('E!?');">🗑️ Delete</button>
+        </form>
     </div>
 
 </body>

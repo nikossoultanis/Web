@@ -8,10 +8,10 @@
             $data[] = $temp;
         }
         $data = json_encode($data);
-        $fp = fopen('exports/edw.json', 'w');
+        $fp = fopen('exports/exported.json', 'w');
         fwrite($fp, $data);
         fclose($fp);
-        echo "telos";
+        echo "Check Exports Folder";
     }
     header('location: admin.php');
     exit;
